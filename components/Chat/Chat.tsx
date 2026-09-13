@@ -8,7 +8,6 @@ interface Props {
   messages: Message[];
   loading: boolean;
   onSend: (message: Message) => void;
-  onReset: () => void;
 }
 
 export const Chat: FC<Props> = ({ messages, loading, onSend, onReset }) => {
