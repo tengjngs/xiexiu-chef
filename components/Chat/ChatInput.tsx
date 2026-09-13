@@ -1,65 +1,39 @@
-import { Message } from "@/types";
-import { IconArrowUp } from "@tabler/icons-react";
-import { FC, KeyboardEvent, useEffect, useRef, useState } from "react";
+import { IconSend } from "@tabler/icons-react";
+import { useState } from "react";
 
 interface Props {
-  onSend: (message: Message) => void;
+  onSend: (message: string) => void;
+  loading?: boolean;
 }
 
-export const ChatInput: FC<Props> = ({ onSend }) => {
-  const [content, setContent] = useState<string>();
-
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
-
-  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const value = e.target.value;
-    if (value.length > 4000) {
-      alert("Message limit is 4000 characters");
-      return;
-    }
-
-    setContent(value);
-  };
+export const ChatInput = ({ onSend, loading }: Props) => {
+  const [input, setInput] = useState("");
 
   const handleSend = () => {
-    if (!content) {
-      alert("Please enter a message");
-      return;
-    }
-    onSend({ role: "user", content });
-    setContent("");
+    if (!input.trim() || loading) return;
+    onSend(input);
+    setInput("");
   };
-
-  const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      handleSend();
-    }
-  };
-
-  useEffect(() => {
-    if (textareaRef && textareaRef.current) {
-      textareaRef.current.style.height = "inherit";
-      textareaRef.current.style.height = `${textareaRef.current?.scrollHeight}px`;
-    }
-  }, [content]);
 
   return (
-    <div className="relative">
-      <textarea
-        ref={textareaRef}
-        className="min-h-[44px] rounded-lg pl-4 pr-12 py-2 w-full focus:outline-none focus:ring-1 focus:ring-neutral-300 border-2 border-neutral-200"
-        style={{ resize: "none" }}
-        placeholder="Type a message..."
-        value={content}
-        rows={1}
-        onChange={handleChange}
-        onKeyDown={handleKeyDown}
-      />
-
-      <button onClick={() => handleSend()}>
-        <IconArrowUp className="absolute right-2 bottom-3 h-8 w-8 hover:cursor-pointer rounded-full p-1 bg-blue-500 text-white hover:opacity-80" />
-      </button>
+    <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 p-3">
+      <div className="max-w-2xl mx-auto flex items-center gap-2">
+        <input
+          type="text"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && handleSend()}
+          placeholder="冰箱里有啥？丢给我，邪修一下"
+          className="flex-1 bg-gray-100 rounded-full px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-[#FF6B6B]/30"
+        />
+        <button
+          onClick={handleSend}
+          disabled={loading || !input.trim()}
+          className="w-10 h-10 rounded-full bg-[#FF6B6B] text-white flex items-center justify-center disabled:opacity-40 shrink-0"
+        >
+          <IconSend size={18} />
+        </button>
+      </div>
     </div>
   );
 };

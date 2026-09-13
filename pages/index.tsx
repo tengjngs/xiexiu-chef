@@ -1,6 +1,6 @@
 import { Chat } from "@/components/Chat/Chat";
+import { ChatInput } from "@/components/Chat/ChatInput";
 import { Footer } from "@/components/Layout/Footer";
-import { Navbar } from "@/components/Layout/Navbar";
 import { Message } from "@/types";
 import Head from "next/head";
 import { useEffect, useRef, useState } from "react";
@@ -76,13 +76,9 @@ export default function Home() {
     }
   };
 
-  const handleReset = () => {
-    setMessages([
-      {
-        role: "assistant",
-        content: `Hi there! I'm Chatbot UI, an AI assistant. I can help you with things like answering questions, providing information, and helping with tasks. How can I help you?`
-      }
-    ]);
+  // 专门给 ChatInput 用的包装函数：把字符串转成 Message
+  const handleSendFromInput = (text: string) => {
+    handleSend({ role: "user", content: text });
   };
 
   useEffect(() => {
@@ -93,7 +89,7 @@ export default function Home() {
     setMessages([
       {
         role: "assistant",
-        content: `Hi there! I'm Chatbot UI, an AI assistant. I can help you with things like answering questions, providing information, and helping with tasks. How can I help you?`
+        content: `我是邪修大厨。冰箱里有啥？丢给我，我给你整三个离谱但好吃的方案。`
       }
     ]);
   }, []);
@@ -101,32 +97,25 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>Chatbot UI</title>
-        <meta
-          name="description"
-          content="A simple chatbot starter kit for OpenAI's chat model using Next.js, TypeScript, and Tailwind CSS."
-        />
-        <meta
-          name="viewport"
-          content="width=device-width, initial-scale=1"
-        />
-        <link
-          rel="icon"
-          href="/favicon.ico"
-        />
+        <title>邪修大厨</title>
+        <meta name="description" content="冰箱剩菜的第二人生" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <div className="flex flex-col h-screen">
-        <Navbar />
-
-        <div className="flex-1 overflow-auto sm:px-10 pb-4 sm:pb-10">
-          <div className="max-w-[800px] mx-auto mt-4 sm:mt-12">
-            <Chat
-              messages={messages}
-              loading={loading}
-              onSend={handleSend}
-              onReset={handleReset}
-            />
+      <div className="flex flex-col h-screen bg-[#FAFAFA]">
+        <div className="flex-1 overflow-hidden sm:px-10 py-4 sm:py-8">
+          <div className="max-w-[800px] mx-auto h-full flex flex-col rounded-2xl border border-neutral-200 bg-white overflow-hidden">
+            <div className="flex-1 overflow-y-auto">
+              <Chat
+                messages={messages}
+                loading={loading}
+                onSend={handleSend}
+              />
+            </div>
+            <div className="border-t border-neutral-100">
+              <ChatInput onSend={handleSendFromInput} />
+            </div>
             <div ref={messagesEndRef} />
           </div>
         </div>

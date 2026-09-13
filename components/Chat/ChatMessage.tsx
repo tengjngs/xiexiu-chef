@@ -1,19 +1,38 @@
 import { Message } from "@/types";
-import { FC } from "react";
+import { IconUser, IconRobot } from "@tabler/icons-react";
 
 interface Props {
   message: Message;
 }
 
-export const ChatMessage: FC<Props> = ({ message }) => {
+export const ChatMessage = ({ message }: Props) => {
+  const isUser = message.role === "user";
+
   return (
-    <div className={`flex flex-col ${message.role === "assistant" ? "items-start" : "items-end"}`}>
+    <div className={`flex ${isUser ? "justify-end" : "justify-start"} mb-4 px-2`}>
+      {/* AI 头像 */}
+      {!isUser && (
+        <div className="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center mr-2 shrink-0">
+          <span className="text-sm">👨‍🍳</span>
+        </div>
+      )}
+
       <div
-        className={`flex items-center ${message.role === "assistant" ? "bg-neutral-200 text-neutral-900" : "bg-blue-500 text-white"} rounded-2xl px-3 py-2 max-w-[67%] whitespace-pre-wrap`}
-        style={{ overflowWrap: "anywhere" }}
+        className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm leading-relaxed whitespace-pre-wrap ${
+          isUser
+            ? "bg-[#FF6B6B] text-white rounded-br-md"
+            : "bg-white text-gray-800 rounded-bl-md shadow-sm border border-gray-100"
+        }`}
       >
         {message.content}
       </div>
+
+      {/* 用户头像 */}
+      {isUser && (
+        <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center ml-2 shrink-0">
+          <IconUser size={16} className="text-gray-500" />
+        </div>
+      )}
     </div>
   );
 };
