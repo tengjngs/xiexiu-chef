@@ -110,7 +110,6 @@ export default function Home() {
               <Chat
                 messages={messages}
                 loading={loading}
-                onSend={handleSend}
               />
             </div>
             <div className="border-t border-neutral-100">
